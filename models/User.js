@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
 });
 
 userSchema.pre("save", function (next) {
-  var user = this; // userSchema
+  let user = this; // userSchema
 
   if (user.isModified("password")) {
     // 비밀번호 암호화
@@ -41,16 +41,28 @@ userSchema.methods.comparePassword = function (plainPassword, cb) {
 };
 
 userSchema.methods.generateToken = function (cb) {
-  var user = this;
+  let user = this;
 
   // jsonwebtoken을 이용해서 token 생성
-  // user.+id + "secretToken" = token
-  var token = jwt.sign(user._id.toHexString(), "secretToken");
+  // user._id + "secretToken" = token
+  let token = jwt.sign(user._id.toHexString(), "secretToken");
 
   user.token = token;
   user.save(function (err, user) {
     if (err) return cb(err);
     cb(null, user);
+  });
+};
+
+userSchema.statics.findByToken = function (token, cb) {
+  let user = this;
+
+  // 복호화하면 _id return
+  jwt.verify(token, "secretToken", function (err, decoded) {
+    user.findOne({ _id: decoded, token: token }, function (err, user) {
+      if (err) return cb(err);
+      cb(null, user);
+    });
   });
 };
 
