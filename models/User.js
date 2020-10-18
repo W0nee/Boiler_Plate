@@ -11,6 +11,6 @@ const userSchema = mongoose.Schema({
   tokeExp: { Type: Number },
 });
 
-const User = mongoose.model("userSchema");
+const User = mongoose.model("users", userSchema);
 
-module.exports = { User };
+module.exports = User;
