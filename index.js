@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 5000;
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const User = require("./models/User");
 const config = require("./config/key");
 
@@ -35,4 +36,31 @@ app.post("/register", (req, res) => {
   });
 });
 
-app.listen(port, () => console.log("http://localhost:" + port));
+app.post("/login", (req, res) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (!user) {
+      return res.json({
+        loginSuccess: false,
+        message: "이메일이 틀림",
+      });
+    }
+
+    user.comparePassword(req.body.password, (err, isMatch) => {
+      if (!isMatch) {
+        return res.json({
+          loginSuccess: false,
+          message: "비밀번호가 틀림",
+        });
+      }
+
+      user.generateToken((err, user) => {
+        if (err) return res.status(400).send(err);
+
+        // 토큰 저장 (로컬, 세션, 쿠키) -> 쿠키
+        res.cookie("x_auth", user.token).status(200).json({ loginSuccess: true, userId: user._id });
+      });
+    });
+  });
+});
+
+app.listen(port, () => console.log(`http://localhost:${port}`));
