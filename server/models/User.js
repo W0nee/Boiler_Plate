@@ -4,10 +4,12 @@ const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 
 const userSchema = mongoose.Schema({
-  name: { type: String, maxLength: 50 },
-  lastname: { type: String, maxLength: 50 },
   email: { type: String, trim: true, unique: true },
-  password: { type: String, minlength: 5 },
+  name: { type: String, maxLength: 50 },
+  password: { type: String, minlength: 4 },
+  year: { type: Number },
+  month: { type: Number },
+  day: { type: Number },
   role: { type: Number, default: 0 },
   image: { type: String },
   token: { type: String },
