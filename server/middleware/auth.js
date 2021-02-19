@@ -11,6 +11,7 @@ let auth = (req, res, next) => {
     if (err) throw err;
     if (!user) return res.json({ isAuth: false, error: true });
 
+    // middleware에서 req를 사용함으로써, next() 이후의 함수에서 req를 통해 접근 가능
     req.token = token;
     req.user = user;
     next();

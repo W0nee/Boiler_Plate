@@ -35,7 +35,7 @@ app.use(cookieParser());
 
 // app.get("/", (req, res) => res.send("Hello World"));
 
-app.get("/api/hello", (req, res) => res.send("Hello World"));
+app.get("/test/hello", (req, res) => res.send("Hello World"));
 
 app.post("/users/register/smsauth", (req, res) => {
   const phone = req.body.receiver;
@@ -147,24 +147,24 @@ app.post("/users/login", (req, res) => {
       user.generateToken((err, user) => {
         if (err) return res.status(400).send(err);
 
-        // 토큰 저장 (로컬, 세션, 쿠키) -> 쿠키
+        // 토큰 저장 (로컬, 세션, 쿠키) -> 쿠키 (x_auth 라는 이름으로)
         res.cookie("x_auth", user.token).status(200).json({ loginSuccess: true, userId: user._id });
       });
     });
   });
 });
 
-app.get("/users/auth", auth, (req, res) => {
-  res.status(200).json({
-    _id: req.user._id,
-    isAdmin: req.user.role === 0 ? false : true,
-    isAuth: true,
-    email: req.user.email,
-    name: req.user.name,
-    role: req.user.role,
-    image: req.user.image,
-  });
-});
+// app.get("/users/auth", auth, (req, res) => {
+//   res.status(200).json({
+//     _id: req.user._id,
+//     isAdmin: req.user.role === 0 ? false : true,
+//     isAuth: true,
+//     email: req.user.email,
+//     name: req.user.name,
+//     role: req.user.role,
+//     image: req.user.image,
+//   });
+// });
 
 app.get("/users/logout", auth, (req, res) => {
   User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => {
