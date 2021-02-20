@@ -33,8 +33,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// app.get("/", (req, res) => res.send("Hello World"));
-
 app.get("/test/hello", (req, res) => res.send("Hello World"));
 
 app.post("/users/register/smsauth", (req, res) => {
@@ -154,17 +152,17 @@ app.post("/users/login", (req, res) => {
   });
 });
 
-// app.get("/users/auth", auth, (req, res) => {
-//   res.status(200).json({
-//     _id: req.user._id,
-//     isAdmin: req.user.role === 0 ? false : true,
-//     isAuth: true,
-//     email: req.user.email,
-//     name: req.user.name,
-//     role: req.user.role,
-//     image: req.user.image,
-//   });
-// });
+app.get("/users/auth", auth, (req, res) => {
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    role: req.user.role,
+    image: req.user.image,
+  });
+});
 
 app.get("/users/logout", auth, (req, res) => {
   User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => {
